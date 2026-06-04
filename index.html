@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEEK – Society for Environmental Education in Kerala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=Noto+Serif+Malayalam:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green-dark: #1a3a2a;
+  --green-mid: #2d6642;
+  --green-accent: #3d8f56;
+  --green-light: #7bc295;
+  --green-pale: #e8f5ee;
+  --green-mist: #f0f8f3;
+  --white: #ffffff;
+  --cream: #f7fbf8;
+  --warm-white: #fdfffe;
+  --text-dark: #0f2419;
+  --text-mid: #2c5038;
+  --text-muted: #6b8f78;
+  --border: rgba(61,143,86,0.15);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--warm-white);
+  color: var(--text-dark);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── DECORATIVE BG MESH ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 60% at 0% 0%, rgba(123,194,149,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(61,143,86,0.06) 0%, transparent 60%),
+    var(--warm-white);
+  pointer-events: none;
+}
+
+/* ── DEV POPUP ── */
+.dev-overlay {
+  position: fixed; inset: 0; z-index: 900;
+  background: rgba(10,26,16,0.78);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.dev-popup {
+  background: linear-gradient(135deg, var(--green-dark) 0%, #0f2419 100%);
+  border-radius: 20px;
+  padding: 2.75rem 3rem;
+  max-width: 420px; width: 100%;
+  text-align: center;
+  position: relative;
+  border: 1px solid rgba(123,194,149,0.2);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
+}
+.dev-popup .popup-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: rgba(61,143,86,0.18);
+  border: 1px solid rgba(123,194,149,0.2);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+.dev-popup .popup-icon svg { width:28px; height:28px; stroke: var(--green-light); fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.dev-popup h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--white); margin-bottom: 0.75rem;
+}
+.dev-popup p { font-size: 0.88rem; color: rgba(123,194,149,0.85); line-height: 1.8; margin-bottom: 2rem; }
+.dev-popup .popup-close {
+  background: linear-gradient(135deg, var(--green-accent), var(--green-mid));
+  color: var(--white);
+  border: none; padding: 0.75rem 2.25rem;
+  border-radius: 50px; font-size: 0.88rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif; letter-spacing: 0.03em;
+  box-shadow: 0 4px 20px rgba(61,143,86,0.35);
+}
+.dev-popup .popup-close:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(61,143,86,0.45); }
+.dev-popup .corner-x {
+  position: absolute; top: 1rem; right: 1rem;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer; color: rgba(255,255,255,0.35);
+  font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.dev-popup .corner-x:hover { background: rgba(255,255,255,0.12); color: var(--white); }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem;
+  height: 68px;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 30px rgba(61,143,86,0.07);
+}
+.nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; flex-shrink: 0; }
+.nav-logo img { width: 42px; height: 42px; object-fit: contain; }
+.logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+.logo-text .l1 { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--green-dark); letter-spacing: 0.05em; }
+.logo-text .l2 { font-size: 0.58rem; font-weight: 400; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* Hamburger */
+.ham-btn {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px;
+}
+.ham-btn span { width: 22px; height: 2px; background: var(--green-dark); border-radius: 2px; transition: all 0.25s; display: block; }
+.ham-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.ham-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.ham-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+.nav-links { display: flex; gap: 0; list-style: none; align-items: center; }
+.nav-links li a {
+  text-decoration: none; font-size: 0.77rem; font-weight: 400;
+  color: var(--text-mid); padding: 0.4rem 0.65rem; border-radius: 6px;
+  transition: color 0.2s, background 0.15s; white-space: nowrap;
+}
+.nav-links li a:hover { color: var(--green-dark); background: var(--green-pale); }
+.nav-links li a.active {
+  color: var(--green-dark); font-weight: 500;
+  background: var(--green-pale);
+}
+
+/* Mobile nav drawer */
+@media (max-width: 820px) {
+  .ham-btn { display: flex; }
+  .nav-links {
+    display: none; position: fixed;
+    top: 68px; left: 0; right: 0;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    flex-direction: column; align-items: stretch; gap: 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    z-index: 99;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links li a {
+    padding: 0.85rem 1.5rem; border-radius: 0;
+    border-bottom: 1px solid var(--green-mist);
+    font-size: 0.9rem;
+  }
+}
+
+/* ── LAYOUT ── */
+.page { display: none; padding-top: 68px; min-height: 100vh; }
+.page.active { display: block; }
+
+/* ── HOME ── */
+.home-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 68px);
+}
+
+/* LEFT COL */
+.left-col {
+  padding: 3.5rem 3rem 4rem 3.5rem;
+  display: flex; flex-direction: column; justify-content: center;
+  border-right: 1px solid var(--border);
+  background: var(--warm-white);
+}
+.left-col .org-label {
+  font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--green-accent); font-weight: 500; margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.left-col .org-label::before {
+  content: ''; width: 24px; height: 1.5px;
+  background: linear-gradient(90deg, var(--green-accent), var(--green-light));
+  border-radius: 2px;
+}
+.left-col h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 2.6vw, 2.6rem);
+  font-weight: 700; line-height: 1.18;
+  color: var(--green-dark); margin-bottom: 0.5rem;
+}
+.left-col h1 em { font-style: italic; color: var(--green-accent); }
+.left-col .location {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.78rem; color: var(--text-muted); margin-bottom: 2.5rem;
+  font-weight: 300;
+}
+.left-col .location svg { width:13px; height:13px; stroke:var(--green-accent); fill:none; stroke-width:2; flex-shrink:0; }
+
+.about-block { margin-bottom: 2.5rem; }
+.about-block p { font-size: 0.88rem; line-height: 1.9; color: var(--text-mid); }
+.about-block p + p { margin-top: 0.7rem; }
+
+/* Magazine block */
+.mag-block {
+  background: linear-gradient(135deg, var(--green-mist) 0%, var(--green-pale) 100%);
+  border-radius: 16px; padding: 1.6rem 1.8rem;
+  border: 1px solid rgba(61,143,86,0.12);
+  border-left: 3px solid var(--green-accent);
+  position: relative; overflow: hidden;
+}
+.mag-block::before {
+  content: '';
+  position: absolute; top: -20px; right: -20px;
+  width: 80px; height: 80px; border-radius: 50%;
+  background: rgba(123,194,149,0.1);
+}
+.mag-block .mag-title-row {
+  display: flex; align-items: baseline; flex-wrap: wrap;
+  gap: 0.4rem 0.75rem; margin-bottom: 0.7rem;
+}
+.mag-block .mag-name {
+  font-family: 'Noto Serif Malayalam', serif;
+  font-size: 1.25rem; color: var(--green-dark); font-weight: 600;
+}
+.mag-block .mag-name-en { font-size: 0.82rem; color: var(--text-muted); font-style: italic; }
+.mag-block p { font-size: 0.85rem; line-height: 1.8; color: var(--text-mid); margin-bottom: 1.1rem; }
+.mag-links { display: flex; gap: 0.65rem; flex-wrap: wrap; }
+.mag-links a {
+  font-size: 0.82rem; font-weight: 500; text-decoration: none;
+  padding: 0.52rem 1.25rem; border-radius: 50px;
+  transition: all 0.2s;
+}
+.mag-links .link-primary {
+  background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+  color: var(--white);
+  box-shadow: 0 3px 12px rgba(26,58,42,0.22);
+}
+.mag-links .link-primary:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(26,58,42,0.32); }
+.mag-links .link-secondary {
+  border: 1.5px solid var(--green-accent); color: var(--green-dark);
+  background: var(--white);
+}
+.mag-links .link-secondary:hover { background: var(--green-dark); color: var(--white); border-color: var(--green-dark); }
+
+/* RIGHT COL */
+.right-col {
+  padding: 3rem 3rem 3rem 2.5rem;
+  background: linear-gradient(160deg, var(--green-mist) 0%, var(--cream) 100%);
+  display: flex; flex-direction: column;
+}
+.archive-title-row {
+  display: flex; align-items: baseline; gap: 0.75rem;
+  margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.archive-title-row h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; color: var(--green-dark);
+}
+.archive-title-row .mag-script {
+  font-family: 'Noto Serif Malayalam', serif;
+  font-size: 1rem; color: var(--green-accent);
+}
+
+/* Archive grid — no captions, fills column width */
+.archive-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.55rem;
+  margin-bottom: 1.75rem;
+}
+.archive-cover {
+  border-radius: 8px; overflow: hidden;
+  border: 1px solid rgba(61,143,86,0.18);
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: var(--green-pale);
+  aspect-ratio: 3/4;
+}
+.archive-cover:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 32px rgba(26,58,42,0.18); }
+.archive-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Contribute box */
+.contribute-box {
+  background: linear-gradient(135deg, var(--green-dark) 0%, #0f2419 100%);
+  border-radius: 14px;
+  padding: 1.3rem 1.5rem; color: var(--white);
+  border: 1px solid rgba(123,194,149,0.12);
+}
+.contribute-box p { font-size: 0.82rem; line-height: 1.8; color: rgba(255,255,255,0.65); }
+.contribute-box strong { color: var(--white); }
+.contribute-box a { color: var(--green-light); text-decoration: none; }
+.contribute-box a:hover { text-decoration: underline; }
+.contribute-box .contrib-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--green-light); font-weight: 500; margin-bottom: 0.65rem; display: block;
+}
+
+/* ── SUBSCRIBE PAGE ── */
+.subscribe-wrap { max-width: 820px; margin: 0 auto; padding: 3.5rem 2rem 5rem; }
+.subscribe-wrap .back-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.82rem; color: var(--green-accent); text-decoration: none;
+  margin-bottom: 2rem; cursor: pointer; background: none; border: none;
+  font-family: 'DM Sans', sans-serif; transition: color 0.2s;
+}
+.subscribe-wrap .back-btn:hover { color: var(--green-dark); }
+.subscribe-wrap h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; color: var(--green-dark); margin-bottom: 0.3rem;
+}
+.subscribe-wrap .ml-head {
+  font-family: 'Noto Serif Malayalam', serif;
+  font-size: 1rem; color: var(--text-muted); margin-bottom: 2.25rem; display: block;
+}
+.sub-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 2rem; align-items: start; }
+.sub-card { background: var(--green-mist); border-radius: 16px; padding: 2rem; border: 1px solid var(--border); }
+.sub-card h2 { font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--green-dark); margin-bottom:1.25rem; }
+.rate-pill {
+  display: inline-flex; align-items: baseline; gap: 0.35rem;
+  background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+  color: var(--white);
+  padding: 0.6rem 1.3rem; border-radius: 50px; margin-bottom: 1.5rem;
+  box-shadow: 0 4px 16px rgba(26,58,42,0.2);
+}
+.rate-pill .amt { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:#7bc295; }
+.rate-pill .per { font-size:0.8rem; color:rgba(255,255,255,0.65); }
+.bank-block { background: var(--white); border-radius: 10px; padding: 1.1rem 1.25rem; margin-bottom: 1rem; border: 1px solid var(--border); }
+.bank-block h3 { font-size:0.75rem; font-weight:500; color:var(--green-dark); margin-bottom:0.75rem; letter-spacing:0.05em; text-transform:uppercase; }
+.bank-block table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+.bank-block td { padding: 0.28rem 0; color:var(--text-mid); vertical-align:top; }
+.bank-block td:first-child { color:var(--text-muted); width:38%; white-space:nowrap; }
+.paytm-block { background: linear-gradient(135deg, var(--green-dark), #0f2419); border-radius:10px; padding:1.25rem; text-align:center; }
+.paytm-block .pm-label { font-size:0.75rem; color:var(--green-light); margin-bottom:0.5rem; }
+.paytm-block .pm-num { font-size:1.4rem; font-weight:700; color:#7bc295; letter-spacing:0.04em; }
+.paytm-block .pm-brand { font-size:1rem; font-weight:700; color:#00BAF2; }
+.contact-note { background:var(--green-pale); border-radius:9px; padding:0.9rem 1.1rem; font-size:0.82rem; color:var(--text-mid); line-height:1.8; margin-top:1rem; border: 1px solid rgba(61,143,86,0.15); }
+.qr-card { background: var(--green-mist); border-radius:16px; padding:1.75rem; text-align:center; border: 1px solid var(--border); }
+.qr-card h3 { font-family:'Playfair Display',serif; font-size:1rem; color:var(--green-dark); margin-bottom:0.4rem; }
+.qr-card p { font-size:0.78rem; color:var(--text-muted); margin-bottom:1.1rem; }
+.qr-card img { width:180px; height:180px; object-fit:contain; border:4px solid var(--white); border-radius:10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.ml-note { background: linear-gradient(135deg, var(--green-dark), #0f2419); border-radius:12px; padding:1.25rem 1.5rem; margin-top:1.5rem; font-family:'Noto Serif Malayalam',serif; font-size:0.85rem; line-height:2.1; color:rgba(255,255,255,0.6); }
+.ml-note strong { color:var(--green-light); }
+
+/* ── PLACEHOLDER PAGES ── */
+.placeholder-page {
+  display:flex; align-items:center; justify-content:center;
+  min-height:60vh; flex-direction:column; gap:1.25rem;
+  text-align:center; padding:4rem 2rem;
+}
+.placeholder-page .icon {
+  width:72px; height:72px;
+  background: linear-gradient(135deg, var(--green-pale), var(--green-mist));
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  border: 1px solid var(--border);
+}
+.placeholder-page .icon svg { width:30px; height:30px; stroke:var(--green-accent); fill:none; stroke-width:1.5; }
+.placeholder-page h2 { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--green-dark); }
+.placeholder-page p { font-size:0.9rem; color:var(--text-muted); max-width:360px; line-height:1.8; }
+.coming-pill {
+  background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+  color: var(--white); padding:0.5rem 1.25rem; border-radius:50px;
+  font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase;
+  box-shadow: 0 4px 14px rgba(26,58,42,0.2);
+  text-decoration: none;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: linear-gradient(135deg, var(--green-dark) 0%, #0f2419 100%);
+  padding: 2.5rem 3.5rem;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.footer-inner {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 1.5rem;
+  max-width: 700px; margin: 0 auto;
+}
+.footer-logo { display:flex; align-items:center; gap:0.75rem; }
+.footer-logo img { width:40px; height:40px; object-fit:contain; filter:brightness(0) invert(1) opacity(0.7); }
+.footer-logo span { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:rgba(255,255,255,0.85); letter-spacing:0.06em; }
+
+/* Social icons */
+.footer-social { display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; justify-content:center; }
+.footer-social a {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.footer-social a:hover {
+  background: rgba(61,143,86,0.3);
+  border-color: rgba(123,194,149,0.4);
+  color: var(--green-light);
+  transform: translateY(-2px);
+}
+.footer-social a svg { width:16px; height:16px; fill:currentColor; }
+.footer-copy { font-size:0.72rem; color:rgba(255,255,255,0.25); text-align:center; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  nav { padding: 0 1.25rem; }
+  .home-wrap { grid-template-columns: 1fr; }
+  .left-col { padding: 2.5rem 1.5rem; border-right: none; border-bottom: 1px solid var(--border); }
+  .right-col { padding: 2rem 1.5rem; }
+  .archive-grid { grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
+  .sub-grid { grid-template-columns: 1fr; }
+  footer { padding: 2rem 1.5rem; }
+}
+@media (max-width: 480px) {
+  .archive-grid { grid-template-columns: repeat(4, 1fr); gap: 0.35rem; }
+  .left-col h1 { font-size: 1.7rem; }
+}
+
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.page.active > * { animation: fadeIn 0.35s ease both; }
+</style>
+</head>
+<body>
+
+<!-- ── UNDER DEVELOPMENT POPUP ── -->
+<div class="dev-overlay" id="devOverlay">
+  <div class="dev-popup">
+    <button class="corner-x" onclick="closeDevPopup()" aria-label="Close">✕</button>
+    <div class="popup-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <h2>Website Under Development</h2>
+    <p>The website is currently being built. We'll be fully online soon.</p>
+    <button class="popup-close" onclick="closeDevPopup()">Continue to Site</button>
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="nav-logo" onclick="showPage('home');return false;">
+    <img src="images/seek-logo.png" alt="SEEK Logo">
+    <div class="logo-text">
+      <span class="l1">SEEK</span>
+      <span class="l2">Society for Environmental Education in Kerala</span>
+    </div>
+  </a>
+  <button class="ham-btn" id="hamBtn" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#" onclick="showPage('home');closeNav();return false;" class="active" id="nav-home">Home</a></li>
+    <li><a href="#" onclick="showPage('history');closeNav();return false;" id="nav-history">History</a></li>
+    <li><a href="#" onclick="showPage('study');closeNav();return false;" id="nav-study">Study & Research</a></li>
+    <li><a href="#" onclick="showPage('fieldcamps');closeNav();return false;" id="nav-fieldcamps">Field Camps</a></li>
+    <li><a href="#" onclick="showPage('soochimukhi');closeNav();return false;" id="nav-soochimukhi">Soochimukhi</a></li>
+    <li><a href="#" onclick="showPage('vanavidyalayam');closeNav();return false;" id="nav-vana">Vanavidyalayam</a></li>
+    <li><a href="#" onclick="showPage('activism');closeNav();return false;" id="nav-activism">Activism</a></li>
+    <li><a href="#" onclick="showPage('contact');closeNav();return false;" id="nav-contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════ HOME PAGE ══════════════ -->
+<div class="page active" id="page-home">
+  <div class="home-wrap">
+
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+      <div class="org-label">Society for Environmental Education in Kerala</div>
+      <h1>Society for<br><em>Environmental</em><br>Education in Kerala</h1>
+      <div class="location">
+        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        Edat, Payyanur, Kannur
+      </div>
+
+      <div class="about-block">
+        <p>The Society for Environmental Education in Kerala, widely known as SEEK, is one of Kerala's pioneering non-governmental organizations dedicated to grassroots environmental education, nature conservation, and ecological research.</p>
+        <p>Based in Edat, Payyanur, SEEK has spent decades working alongside local communities and youth to foster deep-rooted environmental literacy since 1981.</p>
+      </div>
+
+      <div class="mag-block">
+        <div class="mag-title-row">
+          <span class="mag-name">സൂചീമുഖി പരിസര വിദ്യഭ്യാസ മാസിക</span>
+          <span class="mag-name-en">Soochimukhi Magazine</span>
+        </div>
+        <p>Kerala's first environmental education monthly, published without interruption since 1981. Available in Malayalam. Published on the 15th of every month. Annual subscription: <strong>₹200</strong>.</p>
+        <div class="mag-links">
+          <a href="#" class="link-secondary" onclick="showPage('subscribe');return false;">Subscribe Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN — ARCHIVE -->
+    <div class="right-col">
+      <div class="archive-title-row">
+        <h2>SEEK Archive</h2>
+        <span class="mag-script">സൂചീമുഖി</span>
+      </div>
+
+      <div class="archive-grid">
+        <div class="archive-cover"><img src="images/Soochimukhi00.png" alt="Soochimukhi"></div>
+        <div class="archive-cover"><img src="images/Soochimukhi01.png" alt="Soochimukhi"></div>
+        <div class="archive-cover"><img src="images/Soochimukhi02.png" alt="Soochimukhi"></div>
+        <div class="archive-cover"><img src="images/Soochimukhi03.png" alt="Soochimukhi"></div>
+        <div class="archive-cover"><img src="images/Soochimukhi04.png" alt="Soochimukhi"></div>
+        <div class="archive-cover"><img src="images/Soochimukhi05.png" alt="Soochimukhi"></div>
+        <div class="archive-cover"><img src="images/Soochimukhi06.png" alt="Soochimukhi"></div>
+        <div class="archive-cover"><img src="images/Soochimukhi07.png" alt="Soochimukhi"></div>
+        <div class="archive-cover"><img src="images/Soochimukhi08.png" alt="Soochimukhi"></div>
+        <div class="archive-cover"><img src="images/Soochimukhi09.png" alt="Soochimukhi"></div>
+      </div>
+
+      <div class="contribute-box">
+        <span class="contrib-label">📂 Contribute</span>
+        <p>If you have any <strong>photos, letters, books, or other documents</strong> to contribute, please contact the coordinator of the digital archive initiative:</p>
+        <p style="margin-top:0.65rem;">
+          <strong>Manoj Karingamadathil</strong><br>
+          📱 <a href="tel:9495513874">9495513874</a> &nbsp;·&nbsp;
+          ✉ <a href="mailto:manoj@sahya.org.in">manoj@sahya.org.in</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /page-home -->
+
+<!-- ══════════════ SOOCHIMUKHI PAGE ══════════════ -->
+<div class="page" id="page-soochimukhi">
+  <div class="placeholder-page">
+    <div class="icon">
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    </div>
+    <h2>Soochimukhi Magazine</h2>
+    <p>Kerala's first environmental education monthly, published since 1981. Full magazine page coming soon.</p>
+    <a href="#" class="coming-pill" onclick="showPage('subscribe');return false;">Subscribe Now — ₹200/year</a>
+  </div>
+</div>
+
+<!-- ══════════════ SUBSCRIBE PAGE ══════════════ -->
+<div class="page" id="page-subscribe">
+  <div class="subscribe-wrap">
+    <button class="back-btn" onclick="showPage('home');return false;">← Back to Home</button>
+    <h1>Subscribe to Soochimukhi</h1>
+    <span class="ml-head">സൂചീമുഖി വരിക്കാരാവുക</span>
+
+    <div class="sub-grid">
+      <div>
+        <div class="sub-card">
+          <h2>Payment Details</h2>
+          <div class="rate-pill">
+            <span class="amt">₹200</span>
+            <span class="per">/ year · 12 issues</span>
+          </div>
+
+          <div class="bank-block">
+            <h3>Bank Transfer (NEFT / IMPS / Online)</h3>
+            <table>
+              <tr><td>Account Name</td><td>The Editor, Soochimukhi</td></tr>
+              <tr><td>Bank</td><td>Bank of Baroda, Payyannur Branch</td></tr>
+              <tr><td>A/C No</td><td><strong>68540100000117</strong></td></tr>
+              <tr><td>IFSC</td><td>BARBOVJPAYY</td></tr>
+              <tr><td>MICR Code</td><td>670012008</td></tr>
+            </table>
+          </div>
+
+          <div class="paytm-block">
+            <div class="pm-label">Pay directly via</div>
+            <div class="pm-brand">Paytm</div>
+            <div class="pm-num">8547588684</div>
+          </div>
+
+          <div class="contact-note">
+            After payment, send your <strong>name and address</strong> via WhatsApp to:<br>
+            <strong>Prabhakaran Vannadil</strong> — <a href="tel:9847182048" style="color:var(--green-accent);">9847182048</a>
+          </div>
+        </div>
+
+        <div class="ml-note">
+          തുക Online transfer ചെയ്ത കാര്യം Address സഹിതം അറിയിക്കേണ്ട Whats app: Prabhakaran Vannadil — <strong>9847182048</strong><br>
+          വരിസംഖ്യ നേരിട്ട് അയക്കാൻ: <strong>8547588684</strong> (Paytm)
+        </div>
+      </div>
+
+      <div class="qr-card">
+        <h3>Scan to Pay</h3>
+        <p>Use Paytm or any UPI app to scan and pay the subscription amount</p>
+        <img src="images/qr_soochimukhi_subcription.png" alt="Subscription QR code">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PLACEHOLDER PAGES ══════════════ -->
+<div class="page" id="page-history">
+  <div class="placeholder-page">
+    <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+    <h2>History of SEEK</h2>
+    <p>The story of SEEK from its founding in 1981 through four decades of environmental work in Kerala.</p>
+    <span class="coming-pill">Coming Soon</span>
+  </div>
+</div>
+
+<div class="page" id="page-study">
+  <div class="placeholder-page">
+    <div class="icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+    <h2>Study & Research</h2>
+    <p>Ecological surveys, biodiversity documentation, and environmental research by SEEK.</p>
+    <span class="coming-pill">Coming Soon</span>
+  </div>
+</div>
+
+<div class="page" id="page-fieldcamps">
+  <div class="placeholder-page">
+    <div class="icon"><svg viewBox="0 0 24 24"><path d="M3 17l4-8 4 8M17 7l4 10"/><path d="M5 13h4M19 17H9"/></svg></div>
+    <h2>Nature Orientation & Field Camps</h2>
+    <p>Immersive outdoor learning programmes in Kerala's forests and wetlands.</p>
+    <span class="coming-pill">Coming Soon</span>
+  </div>
+</div>
+
+<div class="page" id="page-vanavidyalayam">
+  <div class="placeholder-page">
+    <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2C6 8 4 14 12 22c8-8 6-14 0-20z"/><path d="M12 22V8"/></svg></div>
+    <h2>Vanavidyalayam, Kottancheri</h2>
+    <p>SEEK's forest school — an experiential nature education centre at Kottancheri.</p>
+    <span class="coming-pill">Coming Soon</span>
+  </div>
+</div>
+
+<div class="page" id="page-activism">
+  <div class="placeholder-page">
+    <div class="icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+    <h2>Activism & Network</h2>
+    <p>Grassroots campaigns, policy advocacy, and Kerala's conservation network.</p>
+    <span class="coming-pill">Coming Soon</span>
+  </div>
+</div>
+
+<div class="page" id="page-contact">
+  <div class="placeholder-page">
+    <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+    <h2>Contact SEEK</h2>
+    <p>Edat, Payyanur, Kannur, Kerala.</p>
+    <a href="mailto:info@seek.org.in" style="color:var(--green-accent); font-size:0.9rem;">info@seek.org.in</a>
+    <span class="coming-pill" style="margin-top:0.25rem;">Full contact page coming soon</span>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img src="images/seek-logo.png" alt="SEEK">
+      <span>SEEK</span>
+    </div>
+
+    <!-- Social media icons -->
+    <div class="footer-social">
+      <!-- Facebook -->
+      <a href="#" aria-label="Facebook" title="Facebook">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      </a>
+      <!-- Instagram -->
+      <a href="#" aria-label="Instagram" title="Instagram">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="currentColor" stroke="none"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </a>
+      <!-- Twitter / X -->
+      <a href="#" aria-label="Twitter" title="Twitter">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 4l16 16M4 20 20 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"/><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <!-- LinkedIn -->
+      <a href="#" aria-label="LinkedIn" title="LinkedIn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+      <!-- YouTube -->
+      <a href="#" aria-label="YouTube" title="YouTube">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.97C5.12 20 12 20 12 20s6.88 0 8.59-.45a2.78 2.78 0 0 0 1.95-1.97A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#0f2419"/></svg>
+      </a>
+      <!-- WhatsApp -->
+      <a href="#" aria-label="WhatsApp" title="WhatsApp">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </a>
+      <!-- Linktree -->
+      <a href="#" aria-label="Linktree" title="Linktree">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7.953 15.066c-.08.163-.08.324-.08.486.08 1.298 1.055 2.27 2.353 2.27h.243c.89 0 1.7-.486 2.11-1.214l.655-1.137-.816 1.38c-.327.57-.98.894-1.7.894-.98 0-1.78-.8-1.78-1.78 0-.163 0-.326.08-.487l-.065-.412zm8.021 0l-.065.411c.08.162.08.325.08.487 0 .98-.8 1.78-1.78 1.78-.72 0-1.374-.325-1.7-.894l-.816-1.38.654 1.137c.41.728 1.22 1.213 2.11 1.213h.244c1.297 0 2.272-.971 2.352-2.269 0-.162 0-.324-.08-.486zM12 2L8.538 7.933l-6.538.952 4.73 4.608-1.115 6.507L12 17l6.385 2.999-1.115-6.507 4.73-4.608-6.538-.952L12 2z"/></svg>
+      </a>
+    </div>
+
+    <div class="footer-copy">Society for Environmental Education in Kerala · Edat, Payyanur, Kannur · Est. 1981</div>
+  </div>
+</footer>
+
+<script>
+function closeDevPopup() {
+  document.getElementById('devOverlay').style.display = 'none';
+}
+function toggleNav() {
+  const btn = document.getElementById('hamBtn');
+  const links = document.getElementById('navLinks');
+  btn.classList.toggle('open');
+  links.classList.toggle('open');
+}
+function closeNav() {
+  document.getElementById('hamBtn').classList.remove('open');
+  document.getElementById('navLinks').classList.remove('open');
+}
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
