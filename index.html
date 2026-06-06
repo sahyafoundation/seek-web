@@ -365,7 +365,10 @@ nav {
 .qr-card .upi-id { font-size:0.85rem; color:var(--text-mid); margin-bottom:1.1rem; background:var(--white); display:inline-block; padding:0.35rem 0.9rem; border-radius:6px; border:1px solid var(--border); }
 .qr-card .upi-id strong { color:var(--green-dark); font-size:0.95rem; letter-spacing:0.02em; }
 .qr-card img { width:200px; height:200px; object-fit:contain; border:4px solid var(--white); border-radius:10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display:block; margin:0 auto; }
-
+.form-section { margin-top: 3rem; }
+.form-heading { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--green-dark); margin-bottom:0.4rem; }
+.form-sub { font-size:0.85rem; color:var(--text-muted); margin-bottom:1.25rem; }
+.form-wrap { background:var(--green-mist); border-radius:14px; padding:1.5rem; border:1px solid var(--border); overflow:hidden; }
 
 /* ── PLACEHOLDER PAGES ── */
 .placeholder-page {
@@ -476,9 +479,9 @@ footer {
     <li><a href="#" onclick="showPage('home');closeNav();return false;" id="nav-history">History</a></li>
     <li><a href="#" onclick="showPage('home');closeNav();return false;" id="nav-study">Study & Research</a></li>
     <li><a href="#" onclick="showPage('home');closeNav();return false;" id="nav-fieldcamps">Field Camps</a></li>
+    <li><a href="#" onclick="showPage('home');closeNav();return false;" id="nav-activism">Activism</a></li>
     <li><a href="#" onclick="showPage('home');closeNav();return false;" id="nav-soochimukhi">Soochimukhi</a></li>
     <li><a href="#" onclick="showPage('home');closeNav();return false;" id="nav-vana">Vanavidyalayam</a></li>
-    <li><a href="#" onclick="showPage('home');closeNav();return false;" id="nav-activism">Activism</a></li>
     <li><a href="#" onclick="showPage('home');closeNav();return false;" id="nav-contact">Contact</a></li>
   </ul>
 </nav>
@@ -576,6 +579,14 @@ footer {
           </div>
 
           <div class="bank-block">
+            <h3>GooglePay / Paytm</h3>
+            <table>
+              <tr><td>Number</td><td><strong>8547588684</strong></td></tr>
+              <tr><td>UPI ID</td><td><strong>soochimukhi@fbl</strong></td></tr>
+            </table>
+          </div>
+
+          <div class="bank-block">
             <h3>Bank Transfer (NEFT / IMPS / Online)</h3>
             <table>
               <tr><td>Account Name</td><td>The Editor, Soochimukhi</td></tr>
@@ -588,10 +599,10 @@ footer {
 
           <div class="contact-note">
             After payment, upload your <strong>name and address</strong> in this
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLScWJvqtCjnYvV068QIaw9UYPp3FDSrbc6SsIiLsA1QtTjufCQ/viewform?usp=dialog" target="_blank" rel="noopener" style="color:var(--green-accent);font-weight:600;">Google Form ↗</a><br><br>
-            For enquiries: <strong>Prabhakaran Vannadil</strong> —
-            <a href="tel:9847182048" style="color:var(--green-accent);">9847182048</a>
-            <span style="font-size:0.78rem;color:var(--text-muted);"> (WhatsApp)</span>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScWJvqtCjnYvV068QIaw9UYPp3FDSrbc6SsIiLsA1QtTjufCQ/viewform?usp=dialog" target="_blank" rel="noopener" style="color:var(--green-accent);font-weight:700;"><strong>Google Form ↗</strong></a><br><br>
+            For enquiries: Prabhakaran Vannadil —
+            <a href="https://wa.me/919847182048" target="_blank" rel="noopener" style="color:var(--green-accent);">9847182048</a>
+            (WhatsApp)
           </div>
         </div>
       </div>
@@ -603,6 +614,16 @@ footer {
         <img src="images/qr_soochimukhi_subcription.jpg" alt="Subscription QR code">
       </div>
     </div>
+
+    <!-- Google Form -->
+    <div class="form-section">
+      <h2 class="form-heading">Submit Your Details After Payment</h2>
+      <p class="form-sub">Fill in your name and address below so we can send your subscription.</p>
+      <div class="form-wrap">
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScWJvqtCjnYvV068QIaw9UYPp3FDSrbc6SsIiLsA1QtTjufCQ/viewform?embedded=true" width="100%" height="2773" frameborder="0" marginheight="0" marginwidth="0" style="border-radius:10px;">Loading…</iframe>
+      </div>
+    </div>
+
   </div>
 </div>
 
